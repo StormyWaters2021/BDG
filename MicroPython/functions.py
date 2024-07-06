@@ -1,15 +1,6 @@
-import utime, pico_i2c_lcd
+import utime
 from variables import *
-
-I2C_ADDR = 63
-I2C_NUM_ROWS = 2
-I2C_NUM_COLS = 16
-
-sda = machine.Pin(0)
-scl = machine.Pin(1)
-i2c = machine.I2C(0, sda=sda, scl=scl, freq=400000)
-lcd = pico_i2c_lcd.I2cLcd(i2c,I2C_ADDR, I2C_NUM_ROWS, I2C_NUM_COLS)
-
+from font import *
 
 def startup():
     global TIMER
@@ -27,7 +18,7 @@ def startup():
     utime.sleep(7)
 
     lcd.clear()
-    lcd.move_to(0, 1)
+    lcd.move_to(0, 3)
     lcd.putstr(f"S/N:{game['serial']}")
     TIMER += utime.time()
 
@@ -39,15 +30,24 @@ def read_pin(pin):
 
 def set_timer_thread():
     time_remaining = TIMER
+    custom_character()
+    lcd.move_to(0, 0)
+    lcd.putstr("Count")
+    lcd.move_to(0, 1)
+    lcd.putstr("down:")
     while still_playing():
         time_remaining = TIMER - utime.time()
 
-        current_minutes = time_remaining // 60
+        current_minutes = str(time_remaining // 60)
         current_seconds = time_remaining % 60
         if current_seconds < 10:
             current_seconds = f"0{current_seconds}"
-        lcd.move_to(0, 0)
-        lcd.putstr(f"Countdown:  {current_minutes}:{current_seconds}")
+        else:
+            current_seconds = str(current_seconds)
+        print_character(0, current_minutes)
+        print_character(1, ":")
+        print_character(2, current_seconds[0])
+        print_character(3, current_seconds[1])
 
 
 def game_win():
@@ -113,3 +113,26 @@ def still_playing():
         return False
     else:
         return True
+
+
+def custom_character():
+    lcd.custom_char(0, bytearray(font0))
+    lcd.custom_char(1, bytearray(font1))
+    lcd.custom_char(2, bytearray(font2))
+    lcd.custom_char(3, bytearray(font3))
+    lcd.custom_char(4, bytearray(font4))
+    lcd.custom_char(5, bytearray(font5))
+    lcd.custom_char(6, bytearray(font6))
+    lcd.custom_char(7, bytearray(font7))
+
+
+def print_character(slot, number):
+    character = custom_font_dict[number]
+    lcd.move_to(font_position[slot], 0)
+    lcd.putchar(character[0])
+    lcd.move_to(font_position[slot]+1, 0)
+    lcd.putchar(character[1])
+    lcd.move_to(font_position[slot], 1)
+    lcd.putchar(character[2])
+    lcd.move_to(font_position[slot]+1, 1)
+    lcd.putchar(character[3])

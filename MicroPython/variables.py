@@ -1,5 +1,15 @@
-import machine
+import machine, pico_i2c_lcd
 VERSION = "1"
+
+I2C_ADDR = 39   # 20x4 Screen
+#I2C_ADDR = 63  # 16x2 Screen
+I2C_NUM_ROWS = 4
+I2C_NUM_COLS = 20
+
+sda = machine.Pin(0)
+scl = machine.Pin(1)
+i2c = machine.I2C(0, sda=sda, scl=scl, freq=400000)
+lcd = pico_i2c_lcd.I2cLcd(i2c,I2C_ADDR, I2C_NUM_ROWS, I2C_NUM_COLS)
 
 WINNING_SCORE = 0
 TIMER = 300
