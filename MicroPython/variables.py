@@ -29,7 +29,8 @@ TOGGLES = [20, 19, 18, 17, 16, ]
 ROCKERS = [15, 14, 13, 12, ]
 WIRES = [11, 10, 9, 8, 7]
 
-COMBINED = [BUTTONS, TOGGLES, ROCKERS, WIRES]
+combined = [BUTTONS, TOGGLES, ROCKERS]
+SWITCHES = [item for sublist in combined for item in sublist]
 
 RED_LED = machine.Pin(2, machine.Pin.OUT)
 GREEN_LED = machine.Pin(3, machine.Pin.OUT)
