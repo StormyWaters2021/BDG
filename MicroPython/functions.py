@@ -20,35 +20,42 @@ def startup():
     lcd.clear()
     lcd.move_to(0, 3)
     lcd.putstr(f"S/N:{game['serial']}")
-    TIMER += utime.time()
 
+    TIMER += utime.time()
 
 def read_pin(pin):
     s = machine.Pin(pin, machine.Pin.IN, machine.Pin.PULL_UP)
     return s.value()
 
-
 def set_timer_thread():
-    time_remaining = TIMER
     custom_character()
+
     lcd.move_to(0, 0)
     lcd.putstr("Count")
     lcd.move_to(0, 1)
     lcd.putstr("down:")
+
+    last_shown_sec = None
+
     while still_playing():
-        time_remaining = TIMER - utime.time()
+        time_remaining = max(0, TIMER - utime.time())
 
         current_minutes = str(time_remaining // 60)
         current_seconds = time_remaining % 60
-        if current_seconds < 10:
-            current_seconds = f"0{current_seconds}"
-        else:
-            current_seconds = str(current_seconds)
-        print_character(0, current_minutes)
-        print_character(1, ":")
-        print_character(2, current_seconds[0])
-        print_character(3, current_seconds[1])
 
+        if current_seconds != last_shown_sec:
+            last_shown_sec = current_seconds
+            if current_seconds < 10:
+                sec_str = f"0{current_seconds}"
+            else:
+                sec_str = str(current_seconds)
+
+            print_character(0, current_minutes)
+            print_character(1, ":")
+            print_character(2, sec_str[0])
+            print_character(3, sec_str[1])
+
+        utime.sleep_ms(100)
 
 def game_win():
     lcd.clear()
@@ -61,7 +68,6 @@ def game_win():
     GREEN_LED.value(1)
     return False
 
-
 def game_lose():
     lcd.clear()
     lcd.move_to(0, 0)
@@ -73,18 +79,18 @@ def game_lose():
     GREEN_LED.value(0)
     return False
 
-
 def flash_colors(sequence):
     RED_LED.value(0)
     BLUE_LED.value(0)
     GREEN_LED.value(0)
 
     for color in sequence:
+        if not still_playing():
+            break
         color.value(1)
-        utime.sleep(.2)
+        utime.sleep_ms(150)
         color.value(0)
-        utime.sleep(.2)
-
+        utime.sleep_ms(150)
 
 def check_pins():
     total = 0
@@ -104,7 +110,6 @@ def check_pins():
                 total += 20
     return total
 
-
 def still_playing():
     score = check_pins()
     if score > WINNING_SCORE + ERROR_MOD:
@@ -113,7 +118,6 @@ def still_playing():
         return False
     else:
         return True
-
 
 def custom_character():
     lcd.custom_char(0, bytearray(font0))
@@ -124,7 +128,6 @@ def custom_character():
     lcd.custom_char(5, bytearray(font5))
     lcd.custom_char(6, bytearray(font6))
     lcd.custom_char(7, bytearray(font7))
-
 
 def print_character(slot, number):
     character = custom_font_dict[number]
