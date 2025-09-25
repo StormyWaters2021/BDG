@@ -16,7 +16,7 @@ TIMER = 300
 TIMEOUT = False
 playing = True
 
-ERROR_MOD = 10
+ERROR_MOD = 20
 
 game = {
         "winners_on": [],
@@ -58,3 +58,4 @@ RED_WIRE = 10
 GREEN_WIRE = 9
 BLUE_WIRE = 8
 BLACK_WIRE = 7
+
