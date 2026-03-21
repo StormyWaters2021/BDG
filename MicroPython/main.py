@@ -1,5 +1,8 @@
-from variables import *
-import game_builder, utime, _thread, functions
+import utime
+import _thread
+import variables as v
+import game_builder
+import functions
 
 game_builder.game_selector()
 functions.startup()
@@ -8,23 +11,24 @@ setup_timer = utime.time()
 wait_time = 0
 
 def main_loop():
-    global playing, WINNING_SCORE
-    WINNING_SCORE = len(game["winners_on"])
+    v.playing = True
+    v.WINNING_SCORE = len(v.game["winners_on"])
 
     _thread.start_new_thread(functions.set_timer_thread, ())
 
-    print(game["winners_on"])
-    while playing:
+    print(v.game["winners_on"])
+
+    while v.playing:
         utime.sleep(1)
         total = functions.check_pins()
 
-        if total == WINNING_SCORE:
-            playing = functions.game_win()
+        if total == v.WINNING_SCORE:
+            v.playing = functions.game_win()
 
         elif not functions.still_playing():
-            playing = functions.game_lose()
+            v.playing = functions.game_lose()
 
         else:
-            functions.flash_colors(game["led_seq"])
+            functions.flash_colors(v.game["led_seq"])
 
 main_loop()
