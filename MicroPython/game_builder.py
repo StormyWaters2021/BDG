@@ -89,7 +89,11 @@ def game_selector():
     game["led_seq"] = LED_PATTERNS[led_slot]["sequence"]            # Store the light sequence 
     game["winners_on"].extend(LED_PATTERNS[led_slot]["solves"])    # Store the solutions guaranteed by the LED sequence
 
-    extra_pulls = [i for i in SERIAL_SOLUTIONS if i not in LED_PATTERNS[led_slot]["exclude"]]
+    extra_pulls = [
+        i for i in SERIAL_SOLUTIONS
+        if i not in LED_PATTERNS[led_slot]["exclude"]
+        and i not in game["winners_on"]
+        ]
     solutions -= len(game["winners_on"])
 
     for _ in range(solutions):

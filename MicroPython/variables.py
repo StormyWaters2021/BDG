@@ -1,18 +1,28 @@
-import machine, pico_i2c_lcd
-VERSION = "1"
+import machine, pico_i2c_lcd, _thread
+VERSION = "2"
 
 I2C_ADDR = 39   # 20x4 Screen
 #I2C_ADDR = 63  # 16x2 Screen
 I2C_NUM_ROWS = 4
 I2C_NUM_COLS = 20
 
+LCD_LOCK = _thread.allocate_lock()
+FINAL_TIME = 0
+
 sda = machine.Pin(0)
 scl = machine.Pin(1)
 i2c = machine.I2C(0, sda=sda, scl=scl, freq=400000)
 lcd = pico_i2c_lcd.I2cLcd(i2c,I2C_ADDR, I2C_NUM_ROWS, I2C_NUM_COLS)
 
+buzzer = machine.PWM(machine.Pin(5))
+buzzer.duty_u16(0)
+
 WINNING_SCORE = 0
 TIMER = 300
+TIMER_HARD = 180
+TIMER_EASY = 420
+GAME_TIME = TIMER
+GAME_MODE = ""
 TIMEOUT = False
 playing = True
 
