@@ -4,6 +4,7 @@ import variables as v
 from font import *
 
 DEBUG = False
+SOUND_ON = True
 
 BUTTON_LETTERS = {
     v.RED_BUTTON: "R",
@@ -47,10 +48,8 @@ def play_tone(freq, ms, duty=20000):
 
 def countdown_tick(time_remaining):
     # Normal tick above 30, faster / sharper below 30
-    if time_remaining < 30:
+    if SOUND_ON:
         play_tone(2400, 35)
-    else:
-        play_tone(1800, 50)
 
 def explosion_sound():
     # Descending harsh burst
@@ -104,7 +103,14 @@ def check_debug():
         counter += 1
     if counter == 5:
         DEBUG = True
-    
+
+
+def check_quiet_mode():
+    global SOUND_ON
+    if read_pin(v.WHITE_TOGGLE) == 0:
+        SOUND_ON = False
+
+
 def detect_difficulty_mode():
     hard_on = read_pin(v.RED_TOGGLE) == 0
     easy_on = read_pin(v.GREEN_TOGGLE) == 0
@@ -271,10 +277,10 @@ def set_timer_thread():
                 v.LCD_LOCK.release()
 
         # Extra half-second tick under 30 seconds
-        if time_remaining < 30 and half_sec_marker != last_half_sec:
-            last_half_sec = half_sec_marker
-            if half_sec_marker % 2 == 1 and time_remaining > 0:
-                play_tone(2400, 20)
+        # if time_remaining < 30 and half_sec_marker != last_half_sec:
+            # last_half_sec = half_sec_marker
+            # if half_sec_marker % 2 == 1 and time_remaining > 0:
+                # play_tone(2400, 20)
 
         utime.sleep_ms(50)
 
@@ -330,7 +336,7 @@ def flash_colors(sequence):
         utime.sleep_ms(150)
         color.value(0)
         utime.sleep_ms(150)
-    
+
 
 def check_pins():
     total = 0

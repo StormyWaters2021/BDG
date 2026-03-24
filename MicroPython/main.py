@@ -6,6 +6,7 @@ import functions
 
 functions.detect_difficulty_mode()
 functions.check_debug()
+functions.check_quiet_mode()
 game_builder.game_selector()
 functions.startup()
 
@@ -31,11 +32,13 @@ def main_loop():
         total = functions.check_pins()
 
         if total == v.WINNING_SCORE:
-            functions.victory_jingle()
+            if v.SOUND_ON:
+                functions.victory_jingle()
             v.playing = functions.game_win()
 
         elif not functions.still_playing():
-            functions.explosion_sound()
+            if v.SOUND_ON:
+                functions.explosion_sound()
             v.playing = functions.game_lose()
             
 
