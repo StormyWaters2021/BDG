@@ -29,12 +29,12 @@ def main_loop():
         total = functions.check_pins()
 
         if total == v.WINNING_SCORE:
-            if v.SOUND_ON:
+            if functions.SOUND_ON:
                 functions.victory_jingle()
             v.playing = functions.game_win()
 
         elif not functions.still_playing():
-            if v.SOUND_ON:
+            if functions.SOUND_ON:
                 functions.explosion_sound()
             v.playing = functions.game_lose()
             
