@@ -1,4 +1,7 @@
 import machine, pico_i2c_lcd, _thread
+
+READY_DELAY = 5
+
 INTRO_LINES = [
     "   Cipher Solver   ",
     "    Escape Games    ",
@@ -12,15 +15,6 @@ WAITING_LINES = [
     "    Timer starts    ",
     "   when finished.   "
 ]
-
-READY_LINES = [
-    "   Game Begins in   ",
-    "    5 Seconds...    ",
-    "",
-    "   Are You Ready?   "
-]
-
-
 
 I2C_ADDR = 39   # 20x4 Screen
 #I2C_ADDR = 63  # 16x2 Screen

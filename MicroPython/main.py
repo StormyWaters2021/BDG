@@ -4,9 +4,9 @@ import variables as v
 import game_builder
 import functions
 
-difficulty = functions.detect_difficulty_mode()
-debug = functions.check_debug()
-quiet = functions.check_quiet_mode()
+functions.detect_difficulty_mode()
+functions.check_debug()
+functions.check_quiet_mode()
 game_builder.game_selector()
 functions.startup()
 

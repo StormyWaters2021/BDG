@@ -217,7 +217,7 @@ def startup():
         "",
         " Reset All Switches ",
         ])
-    utime.sleep(2)
+    utime.sleep(3)
 
     if check_pins() > 0:
         lcd_write_lines(v.WAITING_LINES)
@@ -225,8 +225,14 @@ def startup():
     while check_pins() > 0:
         utime.sleep_ms(200)
 
-    lcd_write_lines(v.READY_LINES)
-    utime.sleep(5)
+    for remaining in range(v.READY_DELAY, 0, -1):
+        lcd_write_lines([
+            "   Game Begins in   ",
+            f"    {remaining} Seconds...    ",
+            "",
+            "   Are You Ready?   "
+        ])
+        utime.sleep(1)
     
     lcd_write_lines([
         "",
