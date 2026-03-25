@@ -82,13 +82,18 @@ SERIAL_CODE = {
 
 def game_selector():
     global game
+    
+    # Number of "correct" answers needed
+    solutions = random.randint(8, 10)
 
-    solutions = random.randint(8, 10)                               # Number of "correct" answers needed
+    # Select one random pattern of LED flashes
+    led_slot = random.randint(0, 11)
+    
+    # Store light sequences and LED winner list
+    game["led_seq"] = LED_PATTERNS[led_slot]["sequence"]
+    game["winners_on"].extend(LED_PATTERNS[led_slot]["solves"])
 
-    led_slot = random.randint(0, 11) # Select one random pattern of LED flashes
-    game["led_seq"] = LED_PATTERNS[led_slot]["sequence"]            # Store the light sequence 
-    game["winners_on"].extend(LED_PATTERNS[led_slot]["solves"])    # Store the solutions guaranteed by the LED sequence
-
+    # Add some extra random solutions
     extra_pulls = [
         i for i in SERIAL_SOLUTIONS
         if i not in LED_PATTERNS[led_slot]["exclude"]

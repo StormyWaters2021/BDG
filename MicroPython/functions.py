@@ -116,10 +116,10 @@ def detect_difficulty_mode():
     easy_on = read_pin(v.GREEN_TOGGLE) == 0
 
     if hard_on and not easy_on:
-        v.GAME_MODE = "Hard"
+        v.GAME_MODE = "Expert"
         v.GAME_TIME = v.TIMER_HARD
     elif easy_on and not hard_on:
-        v.GAME_MODE = "Easy"
+        v.GAME_MODE = "Novice"
         v.GAME_TIME = v.TIMER_EASY
     else:
         v.GAME_MODE = "Normal"
@@ -206,43 +206,28 @@ def test_mode():
     
     
 def startup():
-    lcd_write_lines([
-        "Cipher Solver",
-        f"Escape Games  v{v.VERSION}",
-        "",
-        ""
-    ])
+    lcd_write_lines(v.INTRO_LINES)
     utime.sleep(3)
-    soundmsg = "Sound On"
+    soundmsg = "    Sound FX: On    "
     if not SOUND_ON:
-        soundmsg = "Sound Off"
+        soundmsg = "    Sound FX Off    "
     lcd_write_lines([
-        f"{v.GAME_MODE} Mode",
+        f"    {v.GAME_MODE} Mode.    ",
         f"{soundmsg}",
         "",
-        "Reset All Switches",
+        " Reset All Switches ",
         ])
     utime.sleep(2)
 
-    lcd_write_lines([
-        "Starting Game...",
-        "Are You Ready?",
-        "",
-        ""
-    ])
-    utime.sleep(5)
-    
     if check_pins() > 0:
-        lcd_write_lines([
-        "Waiting for switches",
-        "to be fully reset...",
-        "Game will start when",
-        "you are finished..."
-    ])
+        lcd_write_lines(v.WAITING_LINES)
     
     while check_pins() > 0:
         utime.sleep_ms(200)
 
+    lcd_write_lines(v.READY_LINES)
+    utime.sleep(5)
+    
     lcd_write_lines([
         "",
         "",
