@@ -9,13 +9,15 @@ When the game starts, it creates a randomized set of win conditions - the switch
 * Hard Mode: Flipping the red switch before turning on will initiate Hard Mode - timer is reduced to 3 minutes.
 * Easy Mode: Flipping the green switch before turning on will initiate Easy Mode - timer is increased to 7 minutes.
 * Silent Mode: Flipping the white toggle before turning on will disable sound. 
-* Debug Mode: Pressing all five buttons before turning on the power will initaite Debug mode - the screen will display additional information during play: the number of buttons, toggles, rockers, and wires that have been changed to their "correct" position, as well as a total count of how many have been switched from default, to assist in debugging connection issues. 
+* Debug Mode: Pressing all five buttons before turning on the power will initaite Debug mode:
+	- Game will ask you to flip all switches and then it will report any that are reading as un-flipped still.
+	- Screen will display additional information during play: the number of buttons, toggles, rockers, and wires that have been changed to their "correct" position, as well as a total count of how many have been switched from default, to assist in debugging connection issues. 
 
 ## Winning and Losing
 
-The countdown timer provides 5 minutes before the players fail the game. If the players flip 2 incorrect buttons, switches, etc. they also fail. The screen changes to a "BOOM" message and the LEDs turn solid red.
+If the timer runs out or the players flip 2+ incorrect switches, a losing sound effect is played, the LEDs turn red, and the screen displays a losing message along with the encoded solution to compare.
 
-If the players figure out the correct solution, they are given a "Congratulations! Bomb Defused!" message and the LEDs all turn green.
+If the players figure out the correct solution, they are given a "Congratulations! Bomb Defused!" message and the LEDs all turn green. A winning jingle is played, and the remaining time is shown. 
 
 ## Building Your Own
 

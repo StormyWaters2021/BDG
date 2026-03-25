@@ -4,9 +4,9 @@ import variables as v
 import game_builder
 import functions
 
-functions.detect_difficulty_mode()
-functions.check_debug()
-functions.check_quiet_mode()
+difficulty = functions.detect_difficulty_mode()
+debug = functions.check_debug()
+quiet = functions.check_quiet_mode()
 game_builder.game_selector()
 functions.startup()
 
@@ -16,9 +16,6 @@ wait_time = 0
 def main_loop():
     v.playing = True
     v.WINNING_SCORE = len(v.game["winners_on"])
-
-    while functions.check_pins() > 0:
-        utime.sleep_ms(200)
 
     v.TIMER = v.GAME_TIME + utime.time()
     v.FINAL_TIME = v.GAME_TIME

@@ -5,6 +5,7 @@ from font import *
 
 DEBUG = False
 SOUND_ON = True
+TEST_MODE = False
 
 BUTTON_LETTERS = {
     v.RED_BUTTON: "R",
@@ -103,26 +104,25 @@ def check_debug():
         counter += 1
     if counter == 5:
         DEBUG = True
-
+        test_mode()
 
 def check_quiet_mode():
     global SOUND_ON
     if read_pin(v.WHITE_TOGGLE) == 0:
         SOUND_ON = False
 
-
 def detect_difficulty_mode():
     hard_on = read_pin(v.RED_TOGGLE) == 0
     easy_on = read_pin(v.GREEN_TOGGLE) == 0
 
     if hard_on and not easy_on:
-        v.GAME_MODE = "HARD"
+        v.GAME_MODE = "Hard"
         v.GAME_TIME = v.TIMER_HARD
     elif easy_on and not hard_on:
-        v.GAME_MODE = "EASY"
+        v.GAME_MODE = "Easy"
         v.GAME_TIME = v.TIMER_EASY
     else:
-        v.GAME_MODE = ""
+        v.GAME_MODE = "Normal"
         v.GAME_TIME = v.TIMER
 
 def led_letter(led):
@@ -171,6 +171,40 @@ def lcd_write_lines(lines):
     finally:
         v.LCD_LOCK.release()
 
+
+def test_mode():
+    lcd_write_lines([
+    "Debug Mode.",
+    "Swap all switches.",
+    "You have 30 seconds.",
+    "",
+    ])
+    utime.sleep(30)
+    button_errors = "B:"
+    toggle_errors = "T:"
+    rocker_errors = "R:"
+    wire_errors = "W:"
+    for item in BUTTON_LETTERS.keys():
+        if read_pin(item) != 0:
+            button_errors += BUTTON_LETTERS[item]    
+    for item in TOGGLE_LETTERS.keys():
+        if read_pin(item) != 0:
+            toggle_errors += TOGGLE_LETTERS[item]
+    for item in ROCKER_LETTERS.keys():
+        if read_pin(item) != 0:
+            rocker_errors += ROCKER_LETTERS[item]
+    for item in WIRE_LETTERS.keys():
+        if read_pin(item) != 1:
+            wire_errors += WIRE_LETTERS[item]
+    lcd_write_lines([
+        button_errors,
+        toggle_errors,
+        rocker_errors,
+        wire_errors
+        ])
+    utime.sleep(10)
+    
+    
 def startup():
     lcd_write_lines([
         "Cipher Solver",
@@ -179,23 +213,16 @@ def startup():
         ""
     ])
     utime.sleep(3)
-
-    if v.GAME_MODE == "HARD":
-        lcd_write_lines([
-            "Hard Mode",
-            "Reset Red Switch",
-            "",
-            ""
+    soundmsg = "Sound On"
+    if not SOUND_ON:
+        soundmsg = "Sound Off"
+    lcd_write_lines([
+        f"{v.GAME_MODE} Mode",
+        f"{soundmsg}",
+        "",
+        "Reset All Switches",
         ])
-        utime.sleep(2)
-    elif v.GAME_MODE == "EASY":
-        lcd_write_lines([
-            "Easy Mode",
-            "Reset Green Switch",
-            "",
-            ""
-        ])
-        utime.sleep(2)
+    utime.sleep(2)
 
     lcd_write_lines([
         "Starting Game...",
@@ -203,7 +230,18 @@ def startup():
         "",
         ""
     ])
-    utime.sleep(7)
+    utime.sleep(5)
+    
+    if check_pins() > 0:
+        lcd_write_lines([
+        "Waiting for switches",
+        "to be fully reset...",
+        "Game will start when",
+        "you are finished..."
+    ])
+    
+    while check_pins() > 0:
+        utime.sleep_ms(200)
 
     lcd_write_lines([
         "",
